@@ -1,19 +1,12 @@
 #!/bin/bash
 
-echo "START"
+echo "/START"
 ID=$(docker run -d "$@")
 echo $ID
 
-trap "echo STOP; docker stop $ID && echo RM && docker rm -v $ID && echo EXIT && exit" SIGTERM
-trap "echo KILL; docker kill $ID ;  echo RM ;  docker rm -v $ID ;  echo EXIT ;  exit" SIGKILL
+# Trap signals, run docker stop / docker kill
+trap "echo /STOP; docker stop $ID && echo /RM && docker rm -v $ID && echo /EXIT && exit" SIGTERM SIGHUP
+trap "echo /KILL; docker kill $ID ;  echo /RM ;  docker rm -v $ID ;  echo /EXIT ;  exit" SIGKILL
 
-# sleep 630720000 || true # 20 years
-read
-
-echo "STOP || KILL"
-docker stop $ID || docker kill $ID
-
-echo "RM"
-docker rm -v $ID
-
-echo EXIT
+# Wait forever
+while true; do sleep 1; done
